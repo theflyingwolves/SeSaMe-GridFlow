@@ -68,6 +68,7 @@ public class VideoProcessor {
 		}
 	}
 	
+	
 	class Processor extends TimerTask {
 		public void run() {
 			if(buffer.size() > 0){
