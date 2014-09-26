@@ -24,7 +24,7 @@ import MotionDetectionUtility.VideoLoader;
 //	    	Mat frame = loader.getFrameAsMat();
 //	    	processor.processFrame(frame);
 //	    }
-
+	    
 	    String basename = "/Users/theflyingwolves/Downloads/Crowd_PETS09/S2/L3/Time_14-41/View_001/frame_";
 	    String typeString = ".jpg";
 	    int count = 240;

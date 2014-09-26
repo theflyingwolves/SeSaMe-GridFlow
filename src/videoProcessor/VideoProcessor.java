@@ -3,13 +3,11 @@ package videoProcessor;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import kMean.KMean;
 import kMean.TwoMeanThresholdSelector;
 
 import org.opencv.core.Core;
@@ -62,9 +60,10 @@ public class VideoProcessor {
 	}
 	
 	public void processFrame(Mat newFrameAsMat){
-		boolean success = buffer.add(new Frame(newFrameAsMat,NUMBER_OF_GRIDS_PER_ROW,NUMBER_OF_GRIDS_PER_COL));
+		Frame frame = new Frame(newFrameAsMat,NUMBER_OF_GRIDS_PER_ROW,NUMBER_OF_GRIDS_PER_COL);
+		boolean success = buffer.add(frame);
 		while(!success){
-			success =  buffer.add(new Frame(newFrameAsMat,NUMBER_OF_GRIDS_PER_ROW,NUMBER_OF_GRIDS_PER_COL));
+			success =  buffer.add(frame);
 		}
 	}
 	
@@ -163,6 +162,7 @@ public class VideoProcessor {
 					System.out.println("Null Varaince Array");
 				}
 			}
+			
 			if(counter%5 == 0){
 //				plotVarianceScatter(frame);
 			}

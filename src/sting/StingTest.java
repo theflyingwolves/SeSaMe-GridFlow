@@ -221,7 +221,7 @@ public class StingTest {
 	}
 	
 	private static Sting constructSting(){
-		String baseName = "/Users/theflyingwolves/Desktop/photo/snow_";
+		String baseName = "/Users/theflyingwolves/Desktop/snow_";
 		String typeName = ".JPG";
 		int count = 1;
 		ImageSequenceLoader loader = new ImageSequenceLoader(baseName, typeName, count);

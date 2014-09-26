@@ -94,7 +94,8 @@ public class StingTestFake {
 		Cell[] activeCells = sting.getActiveCells();
 		System.out.println("Number of Cells Left: "+activeCells.length);
 		for(Cell c : activeCells){
-			System.out.println("Cell Content: "+c);
+//			System.out.println("Cell Content: "+c);
+			System.out.println("Cell Level: "+c.getLevel());
 		}
 	}
 }

@@ -3,10 +3,20 @@ package sting;
 public class Cell implements CellType{
 	private boolean isActive;
 	private Combinable property;
+	private int level;
 	
 	public Cell(Combinable prop){
 		property = prop;
 		isActive = true;
+		level = 0;
+	}
+	
+	public int getLevel(){
+		return this.level;
+	}
+	
+	public void setLevel(int newLevel){
+		this.level = newLevel;
 	}
 	
 	public Cell combineWith(Cell c){

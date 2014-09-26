@@ -90,11 +90,17 @@ public class Layer {
 	private CellType combineAll(CellType[] cellsToCombine){
 		boolean isCombinable = testCombinability(cellsToCombine);
 		boolean shouldCombine = shouldCombineCells(cellsToCombine);
+		int oldLevelNumber = -1;
 		if(isCombinable && shouldCombine){
 			Cell combinedCell = null;
 			for(CellType c : cellsToCombine){
 				if(c!=null){
 					Cell cell = (Cell)c;
+					
+					if(oldLevelNumber == -1){
+						oldLevelNumber = cell.getLevel();
+					}
+					
 					if(combinedCell == null){
 						combinedCell = cell;
 					}else{
@@ -102,6 +108,7 @@ public class Layer {
 					}
 				}
 			}
+			combinedCell.setLevel(oldLevelNumber+1);
 			return combinedCell;
 		}else{
 			CellGroup cellsInGroup = new CellGroup(cellsToCombine);
