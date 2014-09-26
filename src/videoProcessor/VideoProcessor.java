@@ -194,8 +194,9 @@ public class VideoProcessor {
 			
 			for(int i=0;i<mvAccs.size();i++){
 				variance[i] = (float) Math.sqrt(mvAccs.get(i).getVariance());
-				globalVarianceMvAcc.addCandidate(variance[i]);
-				globalVarianceMvAcc.accumulateCandidate();
+				globalVarianceMvAcc.accumulate(variance[i]);
+//				globalVarianceMvAcc.addCandidate(variance[i]);
+//				globalVarianceMvAcc.accumulateCandidate();
 			}
 			
 			Arrays.sort(variance);

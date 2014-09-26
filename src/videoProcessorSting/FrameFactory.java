@@ -51,8 +51,7 @@ public class FrameFactory {
 			for(int j=0; j<mvAccs[0].length; j++){
 				mvAcc = mvAccs[i][j];
 				double value = mat.get(i, j)[0];
-				mvAcc.addCandidate(value);
-				sig = new Significance(mvAcc.isCandidateWithinConfidenceInterval());
+				sig = new Significance(mvAcc.isPointWithinConfidenceInterval(value));
 				cells[i][j] = new Cell(sig);
 			}
 		}
@@ -70,11 +69,11 @@ public class FrameFactory {
 		while(activeCells == null || activeCells.length > 30){
 			sting.execute();
 			
-			if(activeCells == null){
-			 	System.out.println("Null Active Cells");
-			}else{
-				System.out.println("length Exe Count "+exeCount+": "+activeCells.length);	
-			}
+//			if(activeCells == null){
+//			 	System.out.println("Null Active Cells");
+//			}else{
+//				System.out.println("length Exe Count "+exeCount+": "+activeCells.length);	
+//			}
 			
 			exeCount++;
 			activeCells = sting.getActiveCells();
@@ -87,6 +86,6 @@ public class FrameFactory {
 		int gridSideLength = (int)Math.pow(2, level);
 		numOfRows = mat.cols() / gridSideLength;
 		numOfCols = mat.rows() / gridSideLength;
-		System.out.println("Num of Rows: "+numOfRows+" Num of Cols: "+numOfCols);
+//		System.out.println("Num of Rows: "+numOfRows+" Num of Cols: "+numOfCols);
 	}
 }

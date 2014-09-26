@@ -38,6 +38,8 @@ public class ImageSequenceLoader {
 		if(this.buffer.size() == 0){
 			if(this.isSequenceFinished){
 				return null;
+			}else{
+				System.out.println("Image Not Loaded Yet");
 			}
 		}
 		

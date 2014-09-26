@@ -1,5 +1,6 @@
 package videoProcessorSting;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import DataStructure.BufferQueue;
 import MotionDetectionUtility.DisplayWindow;
 import MotionDetectionUtility.ImageSequenceLoader;
 import MotionDetectionUtility.MeanVarianceAccumulator;
+import MotionDetectionUtility.Utility;
 import MotionDetectionUtility.Vector;
 
 public class VideoProcessorSting {
@@ -57,11 +59,17 @@ public class VideoProcessorSting {
 				Mat matToProcess = buffer.getLatest();
 				prevMat = currMat;
 				currMat = matToProcess;
-				if(globalFrameNumberCounter < NUM_OF_FRAMES_INIT){
-					accumulateMvAccs(matToProcess);
-				}else{
+//				if(globalFrameNumberCounter < NUM_OF_FRAMES_INIT){
+//					accumulateMvAccs(matToProcess);
+//				}else{
+//					processMat(matToProcess);
+//				}
+				
+				accumulateMvAccs(matToProcess);
+				if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
 					processMat(matToProcess);
 				}
+				
 				globalFrameNumberCounter ++;
 			}
 		}
@@ -86,11 +94,26 @@ public class VideoProcessorSting {
 		private void feedMatToMvAccs(Mat mat){
 			for(int i=0;i<mat.rows();i++){
 				for(int j=0;j<mat.cols();j++){
-					mvAccs[i][j].addCandidate(mat.get(i, j)[0]);
-					mvAccs[i][j].accumulateCandidate();
-					if(i==0 && j==0){
-						System.out.println("Color: "+mat.get(192, 379)[0]+" Mean: "+mvAccs[192][379].getMean());
+//					mvAccs[i][j].addCandidate(mat.get(i, j)[0]);
+//					mvAccs[i][j].accumulateCandidate();
+					mvAccs[i][j].accumulate(mat.get(i, j)[0]);
+					
+					if(i >= 200 && i < 250 && j >= 200 && j< 250){
+//						System.out.print(mat.get(i, j)[0]+" ");
 					}
+					
+					if(i == 250 && j==250){
+						System.out.print("\n");
+					}
+					
+					if(mvAccs[i][j].getVariance() > 0){
+//						System.out.println("Variance Not Zero!!!!!!!!!!!!!!!!!");
+					}
+					
+					
+//					if(i==0 && j==0){
+//						System.out.println("Color: "+mat.get(192, 379)[0]+" Mean: "+mvAccs[192][379].getMean());
+//					}
 				}
 			}
 		}
@@ -166,22 +189,6 @@ public class VideoProcessorSting {
 		}
 	}
 	
-	public static void main(String[] args){
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		String basename = "/Users/theflyingwolves/Downloads/Crowd_PETS09/S2/L3/Time_14-41/View_001/frame_";
-		String typeString = ".jpg";
-		    
-		int count = 240;
-		
-		ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
-		VideoProcessorSting sProcessor = new VideoProcessorSting();
-		while(!loader.isEndOfSequence()){
-			Mat mat = loader.getFrameAsMat();
-			Imgproc.cvtColor(mat, mat,Imgproc.COLOR_BGR2GRAY);
-			sProcessor.processFrame(mat);
-		}
-	}
-	
 	private int getEdgeWeightBetweenGrids(Grid grid1, Grid grid2){
 			ArrayList<Integer> grid1Pixels = grid1.getGridPixels();
 			ArrayList<Integer> grid2Pixels = grid2.getGridPixels();
@@ -198,5 +205,39 @@ public class VideoProcessorSting {
 				sum += (Math.abs(pixel1-pixel2));
 			}
 			return sum/grid1Pixels.size();
+	}
+	
+	public static void main(String[] args){
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		String basename = "/Users/theflyingwolves/Downloads/Crowd_PETS09/S2/L3/Time_14-41/View_001/frame_";
+		String typeString = ".jpg";
+		DisplayWindow window = new DisplayWindow();
+		
+		int count = 240;
+		
+	    ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
+	    VideoProcessorSting sProcessor = new VideoProcessorSting();
+	    while(!loader.isEndOfSequence()){
+	    	Mat mat = loader.getFrameAsMat();
+	    	
+			System.out.println("Loading Next");
+			BufferedImage img = Utility.matToBufferedImage(mat);
+			window.setSize(img.getWidth(), img.getHeight());
+			window.showFrame(img);
+			
+	    	sProcessor.processFrame(mat);
+	    }
+	    
+		
+//		ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
+//		VideoProcessorSting sProcessor = new VideoProcessorSting();
+//		while(!loader.isEndOfSequence()){
+//			Mat mat = loader.getFrameAsMat();
+//			
+//
+//			
+//			Imgproc.cvtColor(mat, mat,Imgproc.COLOR_BGR2GRAY);
+//			sProcessor.processFrame(mat);
+//		}
 	}
 }
