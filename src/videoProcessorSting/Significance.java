@@ -50,9 +50,9 @@ public class Significance extends Combinable{
 	
 	public String toString(){
 		if(significance){
-			return "true";
+			return "T";
 		}else{
-			return "false";
+			return "F";
 		}
 	}
 }

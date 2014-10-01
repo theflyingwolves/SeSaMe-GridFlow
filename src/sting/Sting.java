@@ -23,6 +23,11 @@ public class Sting {
 		layers.add(upperLayer);
 	}
 	
+	public void printInfo(){
+		Layer layer = getTopLayer();
+		layer.printInfo();
+	}
+	
 	private Layer getTopLayer(){
 		int index = layers.size()-1;
 		return layers.get(index);

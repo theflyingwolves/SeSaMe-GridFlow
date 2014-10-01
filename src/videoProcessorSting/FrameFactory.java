@@ -47,6 +47,7 @@ public class FrameFactory {
 		Cell[][] cells = new Cell[mvAccs.length][mvAccs[0].length];
 		MeanVarianceAccumulator mvAcc;
 		Significance sig;
+		
 		for(int i=0;i<mvAccs.length;i++){
 			for(int j=0; j<mvAccs[0].length; j++){
 				mvAcc = mvAccs[i][j];
@@ -55,6 +56,7 @@ public class FrameFactory {
 				cells[i][j] = new Cell(sig);
 			}
 		}
+		
 		return cells;
 	}
 	
@@ -74,8 +76,13 @@ public class FrameFactory {
 //			}else{
 //				System.out.println("length Exe Count "+exeCount+": "+activeCells.length);	
 //			}
-			
+
 			exeCount++;
+			
+			if(exeCount >= 4){
+				sting.printInfo();
+			}
+			
 			activeCells = sting.getActiveCells();
 		}
 	}
@@ -86,6 +93,6 @@ public class FrameFactory {
 		int gridSideLength = (int)Math.pow(2, level);
 		numOfRows = mat.cols() / gridSideLength;
 		numOfCols = mat.rows() / gridSideLength;
-//		System.out.println("Num of Rows: "+numOfRows+" Num of Cols: "+numOfCols);
+		System.out.println("Num of Rows: "+numOfRows+" Num of Cols: "+numOfCols);
 	}
 }

@@ -34,6 +34,15 @@ public class Layer {
 		return activeCells;
 	}
 	
+	public void printInfo(){
+		for(int i=0; i<cells.length; i++){
+			for(int j=0; j<cells[0].length; j++){
+				System.out.print(cells[i][j]+" ");
+			}
+			System.out.println(" ");
+		}
+	}
+	
 	private ArrayList<Cell> getActiveCellsInCellGroup(CellGroup cg){
 		ArrayList<Cell> activeCells = new ArrayList<Cell>();
 		CellType[] frontiers = cg.getFrontiers();

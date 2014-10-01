@@ -6,8 +6,6 @@ public class MeanVarianceAccumulator {
 	private double sumOfSquares;
 	private int count;
 	
-	private final int initializationCount = 10;
-	
 	public MeanVarianceAccumulator(){
 		this.mean = 0;
 		this.variance = 0;
@@ -22,13 +20,6 @@ public class MeanVarianceAccumulator {
 		this.sumOfSquares = this.sumOfSquares + x*x;
 		this.variance = this.sumOfSquares / this.count - this.mean * this.mean;
 	}
-	
-//	public void addCandidate(double x){
-//		this.candidate = x;
-//		if(this.count < this.initializationCount){
-//			this.accumulateCandidate();
-//		}
-//	}
 	
 	public double getMean(){
 		return this.mean;
@@ -48,20 +39,12 @@ public class MeanVarianceAccumulator {
 	
 	public boolean isPointWithinConfidenceInterval(double x){
 		double std = Math.sqrt(this.variance);
-		double confidenceControl = 3;
+		double confidenceControl = 4;
 		if(x >= this.mean - confidenceControl*std &&
 				x <= this.mean + confidenceControl*std){
 			return true;
 		}else{
 			return false;
 		}
-	}
-	
-	public static void main(String[] args){
-		MeanVarianceAccumulator mvAcc = new MeanVarianceAccumulator();
-		for(int i=0; i<100; i++){
-			mvAcc.accumulate(10);
-		}
-		System.out.println("The mean is "+mvAcc.getMean()+" and the variance is "+mvAcc.getVariance());
 	}
 }

@@ -59,18 +59,24 @@ public class VideoProcessorSting {
 				Mat matToProcess = buffer.getLatest();
 				prevMat = currMat;
 				currMat = matToProcess;
+				
+				buffer.removeOldest();
+				
 //				if(globalFrameNumberCounter < NUM_OF_FRAMES_INIT){
 //					accumulateMvAccs(matToProcess);
 //				}else{
 //					processMat(matToProcess);
 //				}
 				
-				accumulateMvAccs(matToProcess);
-				if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
-					processMat(matToProcess);
+				if(matToProcess != null){
+					accumulateMvAccs(matToProcess);
+					
+					if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
+						processMat(matToProcess);
+					}
+					
+					globalFrameNumberCounter ++;
 				}
-				
-				globalFrameNumberCounter ++;
 			}
 		}
 		
@@ -94,34 +100,15 @@ public class VideoProcessorSting {
 		private void feedMatToMvAccs(Mat mat){
 			for(int i=0;i<mat.rows();i++){
 				for(int j=0;j<mat.cols();j++){
-//					mvAccs[i][j].addCandidate(mat.get(i, j)[0]);
-//					mvAccs[i][j].accumulateCandidate();
 					mvAccs[i][j].accumulate(mat.get(i, j)[0]);
-					
-					if(i >= 200 && i < 250 && j >= 200 && j< 250){
-//						System.out.print(mat.get(i, j)[0]+" ");
-					}
-					
-					if(i == 250 && j==250){
-						System.out.print("\n");
-					}
-					
-					if(mvAccs[i][j].getVariance() > 0){
-//						System.out.println("Variance Not Zero!!!!!!!!!!!!!!!!!");
-					}
-					
-					
-//					if(i==0 && j==0){
-//						System.out.println("Color: "+mat.get(192, 379)[0]+" Mean: "+mvAccs[192][379].getMean());
-//					}
 				}
 			}
 		}
 		
 		private void processMat(Mat matToProcess){
-			if(globalFrameNumberCounter == NUM_OF_FRAMES_INIT){
-				printMvAccInfo();
-			}
+//			if(globalFrameNumberCounter == (NUM_OF_FRAMES_INIT+1)){
+//				printMvAccInfo();
+//			}
 			
 			FrameFactory frameFactory = new FrameFactory(matToProcess,mvAccs);
 			Frame currFrame = frameFactory.getFrame();
@@ -180,11 +167,11 @@ public class VideoProcessorSting {
 		
 		private void printMvAccInfo(){
 //			System.out.println("Printing MvAcc Info");
-//			for(int i=0;i<mvAccs.length;i++){
-//				for(int j=0;j<mvAccs[0].length;j++){
-//					System.out.println("Mean: "+mvAccs[i][j].getVariance());
-//				}
-//			}
+			for(int i=0;i<mvAccs.length;i++){
+				for(int j=0;j<mvAccs[0].length;j++){
+					System.out.println("Variance: "+mvAccs[i][j].getVariance());
+				}
+			}
 //			System.out.println("Mean: "+mvAccs[100][100].getMean());
 		}
 	}
@@ -219,25 +206,12 @@ public class VideoProcessorSting {
 	    VideoProcessorSting sProcessor = new VideoProcessorSting();
 	    while(!loader.isEndOfSequence()){
 	    	Mat mat = loader.getFrameAsMat();
-	    	
-			System.out.println("Loading Next");
+			
 			BufferedImage img = Utility.matToBufferedImage(mat);
 			window.setSize(img.getWidth(), img.getHeight());
 			window.showFrame(img);
 			
 	    	sProcessor.processFrame(mat);
 	    }
-	    
-		
-//		ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
-//		VideoProcessorSting sProcessor = new VideoProcessorSting();
-//		while(!loader.isEndOfSequence()){
-//			Mat mat = loader.getFrameAsMat();
-//			
-//
-//			
-//			Imgproc.cvtColor(mat, mat,Imgproc.COLOR_BGR2GRAY);
-//			sProcessor.processFrame(mat);
-//		}
 	}
 }

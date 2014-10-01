@@ -35,15 +35,14 @@ public class ImageSequenceLoader {
 	}
 	
 	public Mat getFrameAsMat(){
+		
 		if(this.buffer.size() == 0){
 			if(this.isSequenceFinished){
 				return null;
-			}else{
-				System.out.println("Image Not Loaded Yet");
 			}
 		}
 		
-		System.out.println("Getting Image Indexed by: "+this.currImageCount);
+//		System.out.println("Getting Image Indexed by: "+(this.currImageCount-this.BUFFER_SIZE));
 		Mat mat = this.buffer.get(0);
 		this.buffer.remove(0);
 		loadImageToBuffer();
