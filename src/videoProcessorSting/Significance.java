@@ -26,12 +26,11 @@ public class Significance extends Combinable{
 	
 	@Override
 	public Combinable combineWith(Combinable[] obj){
-		System.out.println("Object Length: "+obj.length);
 		int count = 0;
 		for(Combinable c : obj){
 			if(c instanceof Significance){
 				Significance s = (Significance)c;
-				if(!s.getSignificance()){
+				if(s.getSignificance()){
 					count++;
 				}
 			}

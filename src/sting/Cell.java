@@ -24,6 +24,15 @@ public class Cell implements CellType{
 		return new Cell(combinedProperty);
 	}
 	
+	public static Cell combineArray(Cell[] cells){
+		Combinable[] properties = new Combinable[cells.length];
+		for(int i=0; i<cells.length; i++){
+			properties[i] = cells[i].getProperty();
+		}
+		Combinable combinedProperty = properties[0].combineWith(properties);
+		return new Cell(combinedProperty);
+	}
+	
 	public Combinable getProperty(){
 		return property;
 	}

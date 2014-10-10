@@ -101,24 +101,38 @@ public class Layer {
 		boolean shouldCombine = shouldCombineCells(cellsToCombine);
 		int oldLevelNumber = -1;
 		if(isCombinable && shouldCombine){
+			Cell[] cellsInGroup = new Cell[cellsToCombine.length];
 			Cell combinedCell = null;
-			for(CellType c : cellsToCombine){
-				if(c!=null){
-					Cell cell = (Cell)c;
-					
-					if(oldLevelNumber == -1){
-						oldLevelNumber = cell.getLevel();
-					}
-					
-					if(combinedCell == null){
-						combinedCell = cell;
-					}else{
-						combinedCell = combinedCell.combineWith(cell);
-					}
-				}
+			
+			for(int i=0; i<cellsToCombine.length; i++){
+				cellsInGroup[i] = (Cell)cellsToCombine[i];
 			}
+			
+			if(oldLevelNumber == -1){
+				oldLevelNumber = cellsInGroup[0].getLevel();
+			}
+			
+			combinedCell = Cell.combineArray(cellsInGroup);
+
 			combinedCell.setLevel(oldLevelNumber+1);
 			return combinedCell;
+			
+//			for(CellType c : cellsToCombine){
+//				if(c!=null){
+//					Cell cell = (Cell)c;
+//					
+//					if(oldLevelNumber == -1){
+//						oldLevelNumber = cell.getLevel();
+//					}
+//					
+//					if(combinedCell == null){
+//						combinedCell = cell;
+//					}else{
+//						combinedCell = combinedCell.combineWith(cell);
+//					}
+//				}
+//			}
+
 		}else{
 			CellGroup cellsInGroup = new CellGroup(cellsToCombine);
 			return cellsInGroup;

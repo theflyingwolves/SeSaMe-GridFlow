@@ -23,7 +23,7 @@ public class FrameFactory {
 			initSizeConfig(mvAccs);
 			constructFrame();
 		}else{
-			System.out.println("FrameWithSting: mvAccs is not of the appropriate size");
+			System.out.println("FrameFactory: mvAccs is not of the appropriate size");
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class FrameFactory {
 			for(int j=0; j<mvAccs[0].length; j++){
 				mvAcc = mvAccs[i][j];
 				double value = mat.get(i, j)[0];
-				sig = new Significance(mvAcc.isPointWithinConfidenceInterval(value));
+				sig = new Significance(!mvAcc.isPointWithinConfidenceInterval(value));
 				cells[i][j] = new Cell(sig);
 			}
 		}
@@ -73,7 +73,7 @@ public class FrameFactory {
 		int exeCount = 0;
 		ArrayList<Cell> movingCells = null;
 		
-		while(movingCells == null || activeCells.length > 200 || movingCells.size() > 30){
+		while(movingCells == null || movingCells.size() > 30){
 			
 			if(movingCells == null){
 				movingCells = new ArrayList<Cell>();
@@ -82,13 +82,7 @@ public class FrameFactory {
 			}
 					
 			sting.execute();
-			
-//			if(activeCells == null){
-//			 	System.out.println("Null Active Cells");
-//			}else{
-//				System.out.println("length Exe Count "+exeCount+": "+activeCells.length);	
-//			}
-			
+
 			exeCount++;
 			
 //			if(exeCount >= 4){
@@ -96,25 +90,18 @@ public class FrameFactory {
 //			}
 			
 			activeCells = sting.getActiveCells();
-			
-			if(activeCells.length <= 200){
-				for(Cell c : activeCells){
-					Combinable prop = c.getProperty();
-					if(prop instanceof Significance){
-						Significance sig = (Significance) prop;
-						if(!sig.getSignificance()){
-							movingCells.add(c);
-						}
-					}else{
-						System.out.println("FrameFactory Line 98: Unexpected type "+prop.getClass());
+		
+			for(Cell c : activeCells){
+				Combinable prop = c.getProperty();
+				if(prop instanceof Significance){
+					Significance sig = (Significance) prop;
+					if(sig.getSignificance()){
+						movingCells.add(c);
 					}
+				}else{
+					System.out.println("FrameFactory Line 102: Unexpected type "+prop.getClass());
 				}
-			}
-			
-			System.out.println("Active Cells: "+activeCells.length+" Moving Cells: "+movingCells.size());
-			if(movingCells.size() > 0){
-					sting.printInfo();
-			}
+			}			
 		}
 	}
 	
