@@ -1,8 +1,11 @@
 package videoProcessorSting;
 
+import java.util.ArrayList;
+
 import org.opencv.core.Mat;
 
 import sting.Cell;
+import sting.Combinable;
 import sting.Sting;
 import videoProcessor.Frame;
 import MotionDetectionUtility.MeanVarianceAccumulator;
@@ -68,7 +71,16 @@ public class FrameFactory {
 	private void executeSting(){
 		Cell[] activeCells = null;
 		int exeCount = 0;
-		while(activeCells == null || activeCells.length > 30){
+		ArrayList<Cell> movingCells = null;
+		
+		while(movingCells == null || activeCells.length > 200 || movingCells.size() > 30){
+			
+			if(movingCells == null){
+				movingCells = new ArrayList<Cell>();
+			}else{
+				movingCells.clear();
+			}
+					
 			sting.execute();
 			
 //			if(activeCells == null){
@@ -76,14 +88,33 @@ public class FrameFactory {
 //			}else{
 //				System.out.println("length Exe Count "+exeCount+": "+activeCells.length);	
 //			}
-
+			
 			exeCount++;
 			
-			if(exeCount >= 4){
-				sting.printInfo();
-			}
+//			if(exeCount >= 4){
+//				sting.printInfo();
+//			}
 			
 			activeCells = sting.getActiveCells();
+			
+			if(activeCells.length <= 200){
+				for(Cell c : activeCells){
+					Combinable prop = c.getProperty();
+					if(prop instanceof Significance){
+						Significance sig = (Significance) prop;
+						if(!sig.getSignificance()){
+							movingCells.add(c);
+						}
+					}else{
+						System.out.println("FrameFactory Line 98: Unexpected type "+prop.getClass());
+					}
+				}
+			}
+			
+			System.out.println("Active Cells: "+activeCells.length+" Moving Cells: "+movingCells.size());
+			if(movingCells.size() > 0){
+					sting.printInfo();
+			}
 		}
 	}
 	
