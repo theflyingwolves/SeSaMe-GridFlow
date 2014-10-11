@@ -103,6 +103,8 @@ public class FrameFactory {
 				}
 			}			
 		}
+		
+		System.out.println("Moving Cells Level: "+movingCells.get(0).getLevel());
 	}
 	
 	private void initSizeInfo(){

@@ -1,14 +1,18 @@
 package sting;
 
+import MotionDetectionUtility.Vector;
+
 public class Cell implements CellType{
 	private boolean isActive;
 	private Combinable property;
 	private int level;
+	private Vector center;
 	
 	public Cell(Combinable prop){
 		property = prop;
 		isActive = true;
 		level = 0;
+		
 	}
 	
 	public int getLevel(){

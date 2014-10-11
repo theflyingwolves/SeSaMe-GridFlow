@@ -32,7 +32,7 @@ public class Frame {
 		this.numOfCols = numOfCols;
 		this.significantGridArray = new ArrayList<Grid>();
 		initGridArray();
-//		initFrameGridBorder();
+		initFrameGridBorder();
 	}
 	
 	private void initGridArray(){

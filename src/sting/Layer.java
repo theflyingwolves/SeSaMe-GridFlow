@@ -116,22 +116,6 @@ public class Layer {
 
 			combinedCell.setLevel(oldLevelNumber+1);
 			return combinedCell;
-			
-//			for(CellType c : cellsToCombine){
-//				if(c!=null){
-//					Cell cell = (Cell)c;
-//					
-//					if(oldLevelNumber == -1){
-//						oldLevelNumber = cell.getLevel();
-//					}
-//					
-//					if(combinedCell == null){
-//						combinedCell = cell;
-//					}else{
-//						combinedCell = combinedCell.combineWith(cell);
-//					}
-//				}
-//			}
 
 		}else{
 			CellGroup cellsInGroup = new CellGroup(cellsToCombine);

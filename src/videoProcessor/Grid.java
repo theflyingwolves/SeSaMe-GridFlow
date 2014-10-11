@@ -84,27 +84,13 @@ public class Grid {
 		for(int pIndex = 0; pIndex < this.gridPixels.size(); pIndex++){
 			int pixel = this.gridPixels.get(pIndex);
 			MeanVarianceAccumulator mvAcc = this.gridMvAccs.get(pIndex);
-//			mvAcc.addCandidate(pixel);
-//			
-//			if(!mvAcc.isCandidateWithinConfidenceInterval()){
-//				count++;
-//			}else{
-//				mvAcc.accumulateCandidate();
-//			}
 			
 			if(!mvAcc.isPointWithinConfidenceInterval(pixel)){
 				count++;
 			}else{
 				mvAcc.accumulate(pixel);
 			}
-			
-//			if(pIndex == 200 && row == 10 && col == 10){
-//				System.out.println("Candidate: "+pixel);
-//				System.out.println("Mean: "+mvAcc.getMean()+" Variance: "+mvAcc.getVariance());
-//				if(!mvAcc.isCandidateWithinConfidenceInterval()){
-//					System.out.println("Not Within Confidence Interval");
-//				}
-//			}
+
 		}
 				
 		if(count > 0.5*this.gridMvAccs.size()){

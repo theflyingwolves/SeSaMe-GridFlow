@@ -35,11 +35,12 @@ public class VideoProcessorSting {
 	private MeanVarianceAccumulator[][] mvAccs;
 	private DisplayWindow window;
 	private Timer timer;
+	private FrameFactory factory;
 	
 	public VideoProcessorSting(){
 		globalFrameNumberCounter = 0;
 		buffer = new BufferQueue<Mat>(BUFFER_SIZE);
-//		window = new DisplayWindow();
+		window = new DisplayWindow();
 		timer = new Timer();
 		timer.schedule(new Processor(),0,PROCESSOR_FREQUENCY);
 	}
@@ -71,12 +72,22 @@ public class VideoProcessorSting {
 				if(matToProcess != null){
 					accumulateMvAccs(matToProcess);
 					
+					BufferedImage img;
+					
 					if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
 						processMat(matToProcess);
+						img = Utility.matToBufferedImage(factory.getFrame().getFrameAsMat());
+					}else{
+						img = Utility.matToBufferedImage(currMat);
 					}
 					
+					window.setSize(img.getWidth(), img.getHeight());
+					window.showFrame(img);
+					
 					globalFrameNumberCounter ++;
+				
 				}
+
 			}
 		}
 		
@@ -110,7 +121,7 @@ public class VideoProcessorSting {
 //				printMvAccInfo();
 //			}
 			
-			FrameFactory frameFactory = new FrameFactory(matToProcess,mvAccs);
+			factory = new FrameFactory(matToProcess,mvAccs);
 //			Frame currFrame = frameFactory.getFrame();
 //			Frame prevFrame = frameFactory.constructPrevFrame(prevMat);
 //			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
@@ -198,19 +209,13 @@ public class VideoProcessorSting {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		String basename = "/Users/theflyingwolves/Downloads/Crowd_PETS09/S2/L3/Time_14-41/View_001/frame_";
 		String typeString = ".jpg";
-		DisplayWindow window = new DisplayWindow();
 		
 		int count = 240;
 		
 	    ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
 	    VideoProcessorSting sProcessor = new VideoProcessorSting();
 	    while(!loader.isEndOfSequence()){
-	    	Mat mat = loader.getFrameAsMat();
-			
-			BufferedImage img = Utility.matToBufferedImage(mat);
-			window.setSize(img.getWidth(), img.getHeight());
-			window.showFrame(img);
-			
+	    	Mat mat = loader.getFrameAsMat();			
 	    	sProcessor.processFrame(mat);
 	    }
 	}
