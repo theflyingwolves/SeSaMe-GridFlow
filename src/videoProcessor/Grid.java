@@ -58,8 +58,6 @@ public class Grid {
 		for(int pIndex = 0; pIndex < this.gridPixels.size(); pIndex++){
 			int pixel = this.gridPixels.get(pIndex);
 			MeanVarianceAccumulator mvAcc = this.gridMvAccs.get(pIndex);
-//			mvAcc.addCandidate(pixel);
-//			mvAcc.accumulateCandidate();
 			mvAcc.accumulate(pixel);
 			if(mvAcc.getVariance() > threshold){
 				count++;

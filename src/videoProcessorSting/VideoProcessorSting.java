@@ -111,9 +111,9 @@ public class VideoProcessorSting {
 //			}
 			
 			FrameFactory frameFactory = new FrameFactory(matToProcess,mvAccs);
-			Frame currFrame = frameFactory.getFrame();
-			Frame prevFrame = frameFactory.constructPrevFrame(prevMat);
-			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
+//			Frame currFrame = frameFactory.getFrame();
+//			Frame prevFrame = frameFactory.constructPrevFrame(prevMat);
+//			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
 //			updateMovingDirections(minCostMatch);
 //			clusterUsingSting(currFrame);
 		}
