@@ -1,18 +1,24 @@
 package sting;
 
+import org.opencv.core.Point;
+
 import MotionDetectionUtility.Vector;
 
 public class Cell implements CellType{
 	private boolean isActive;
 	private Combinable property;
 	private int level;
-	private Vector center;
+	private Point center;
 	
-	public Cell(Combinable prop){
+	public Cell(Combinable prop, double row, double col){
 		property = prop;
 		isActive = true;
 		level = 0;
-		
+		center = new Point(row,col);
+	}
+	
+	public Cell(Combinable prop, Point center){
+		this(prop, center.x, center.y);
 	}
 	
 	public int getLevel(){
@@ -23,18 +29,32 @@ public class Cell implements CellType{
 		this.level = newLevel;
 	}
 	
+	public Point getCenter(){
+		return this.center;
+	}
+	
 	public Cell combineWith(Cell c){
 		Combinable combinedProperty = property.combineWith(c.getProperty());
-		return new Cell(combinedProperty);
+		Point centerC = c.getCenter();
+		Point combinedCenter = new Point((centerC.x+center.x) / 2, (centerC.y + center.y)/2);
+		return new Cell(combinedProperty, combinedCenter);
 	}
 	
 	public static Cell combineArray(Cell[] cells){
-		Combinable[] properties = new Combinable[cells.length];
-		for(int i=0; i<cells.length; i++){
-			properties[i] = cells[i].getProperty();
+		int len = cells.length;
+		Combinable[] properties = new Combinable[len];
+		Point sumCenter = new Point(0,0);
+		
+		for(int i=0; i<len; i++){
+			Cell c = cells[i];
+			Point center = c.getCenter();
+			properties[i] = c.getProperty();
+			sumCenter = new Point(sumCenter.x+center.x, sumCenter.y+center.y);
 		}
+		
 		Combinable combinedProperty = properties[0].combineWith(properties);
-		return new Cell(combinedProperty);
+		Point avgCenter = new Point(sumCenter.x / len, sumCenter.y / len);
+		return new Cell(combinedProperty, avgCenter);
 	}
 	
 	public Combinable getProperty(){

@@ -260,7 +260,7 @@ public class StingTest {
 					sig = new Significance(false);
 				}
 				
-				cells[i][j] = new Cell(sig);
+				cells[i][j] = new Cell(sig,i,j);
 			}
 		}
 		

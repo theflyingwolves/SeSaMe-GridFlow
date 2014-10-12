@@ -68,7 +68,7 @@ public class StingTestFake {
 				}
 				
 				Significance sig = new Significance(value);
-				cells[i][j] = new Cell(sig);
+				cells[i][j] = new Cell(sig,i,j);
 				counter++;
 			}
 		}

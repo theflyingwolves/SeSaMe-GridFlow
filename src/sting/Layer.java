@@ -80,6 +80,9 @@ public class Layer {
 	
 	public Layer layerWisePropagate(){
 		CellType[][][] cellGroups = groupAdjacentCells();
+		
+		System.out.println("Cell Groups Init ["+cellGroups.length+", "+cellGroups[0].length+", "+cellGroups[0][0].length+"]");
+		
 		CellType[][] updatedCells = new CellType[cellGroups.length][cellGroups[0].length];
 		CellType combinedCell = null;
 		CellType[] cellsInGroup;
@@ -116,7 +119,6 @@ public class Layer {
 
 			combinedCell.setLevel(oldLevelNumber+1);
 			return combinedCell;
-
 		}else{
 			CellGroup cellsInGroup = new CellGroup(cellsToCombine);
 			return cellsInGroup;

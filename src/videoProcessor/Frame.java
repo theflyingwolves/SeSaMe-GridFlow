@@ -35,6 +35,27 @@ public class Frame {
 		initFrameGridBorder();
 	}
 	
+	public Frame(Mat mat, int numOfRows, int numOfCols, ArrayList<Point> sigCenters){
+		this(mat,numOfRows, numOfCols);
+		initSigGrids(sigCenters);
+	}
+	
+	private void initSigGrids(ArrayList<Point> centers){
+		
+		// Can be optimized by sorting
+		for(int i=0; i<centers.size(); i++){
+			Point center = centers.get(i);
+			for(int j=0; j<gridArray.size(); j++){
+				Grid grid = gridArray.get(j);
+				if(grid.isPointWithinGrid(center)){
+					significantGridArray.add(grid);
+				}
+			}
+		}
+		
+		System.out.println("Significant Grid Array Size: "+significantGridArray.size());
+	}
+	
 	private void initGridArray(){
 		if(gridArray == null){
 			gridArray = new ArrayList<Grid>();
@@ -82,7 +103,6 @@ public class Frame {
 		}
 		int oldSize = this.mvAccs.size();
 		this.mvAccs.addAll(newMvAccs);
-//		System.out.println("Size was: "+oldSize+" and becomes "+this.mvAccs.size());
 	}
 	
 	public ArrayList<MeanVarianceAccumulator> getMvAccs(){

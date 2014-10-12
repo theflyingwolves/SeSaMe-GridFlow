@@ -121,23 +121,52 @@ public class VideoProcessorSting {
 //				printMvAccInfo();
 //			}
 			
+			System.out.println("Start constructing factory");
 			factory = new FrameFactory(matToProcess,mvAccs);
-//			Frame currFrame = frameFactory.getFrame();
-//			Frame prevFrame = frameFactory.constructPrevFrame(prevMat);
-//			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
+			System.out.println("Factory constructed");
+			Frame currFrame = factory.getFrame();
+			Frame prevFrame = factory.constructPrevFrame(prevMat);
+			System.out.println("prevFrame and currFrame constructed");
+			prepareFrame(currFrame); //Convert frame to b/w frame and assign pixels to each grid
+			prepareFrame(prevFrame);
+			System.out.println("prevFrame and currFrame prepared");
+			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
+			System.out.println("minCostMatch Obtained");
 //			updateMovingDirections(minCostMatch);
 //			clusterUsingSting(currFrame);
 		}
 		
 		private Map<Grid,Grid> BipartiteMatch(Frame currFrame,Frame prevFrame){
-			ArrayList<Grid> currSignificantGridArray = currFrame.getGridArray();
-			ArrayList<Grid> prevSignificantGridArray = prevFrame.getGridArray();
+			ArrayList<Grid> currSignificantGridArray = currFrame.getSignificantGridArray();
+			ArrayList<Grid> prevSignificantGridArray = prevFrame.getSignificantGridArray();
+			System.out.println("SigArray: "+currSignificantGridArray.size());
 			Map<Edge<Grid>,Double> graph = buildGraphUsingSignificantGridArrays(currSignificantGridArray,
 					prevSignificantGridArray);
+			System.out.println("Graph Successfully Built");
 			HungarianMatch<Grid> hMatch = new HungarianMatch<Grid>(graph);
+			System.out.println("Min Cost Match Obtained");
 			Map<Grid,Grid> minCostMatch = hMatch.getMinCostMatch();
 			return minCostMatch;
 //			updateMovingDirections(minCostMatch);
+		}
+		
+		private void prepareFrame(Frame frame){
+			Mat mat = frame.getFrameAsMat();
+			if(mat!=null){
+				if(frame.getFrameAsMat().channels() > 1){
+					Imgproc.cvtColor(frame.getFrameAsMat(), frame.getFrameAsMat(),Imgproc.COLOR_BGR2GRAY);
+				}
+				assignPixelsToGrids(frame);
+			}
+		}
+		
+		private void assignPixelsToGrids(Frame frame){
+			ArrayList<Grid> gridArray = frame.getGridArray();
+			BufferedImage frameAsImage = frame.getFrameAsBufferedImage();
+			int[][] frameAsIntArray = Utility.bufferedImageTo2DArray(frameAsImage);
+			for(Grid grid : gridArray){
+				grid.assignPixelsInFrameArray(frameAsIntArray);
+			}
 		}
 		
 		private void clusterUsingSting(Frame frame){

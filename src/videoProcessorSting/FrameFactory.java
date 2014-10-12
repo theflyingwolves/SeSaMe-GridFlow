@@ -3,6 +3,7 @@ package videoProcessorSting;
 import java.util.ArrayList;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 
 import sting.Cell;
 import sting.Combinable;
@@ -16,10 +17,13 @@ public class FrameFactory {
 	private int numOfRows, numOfCols;
 	private Sting sting;
 	private Frame frame;
+	private ArrayList<Point> ctrOfSigCells;
 	
 	public FrameFactory(Mat mat, MeanVarianceAccumulator[][] mvAccs){
 		if(mat.rows() == mvAccs.length && mat.cols()==mvAccs[0].length){
 			this.mat = mat;
+			this.ctrOfSigCells = new ArrayList<Point>();
+			System.out.println("Start Init Size Config");
 			initSizeConfig(mvAccs);
 			constructFrame();
 		}else{
@@ -31,19 +35,21 @@ public class FrameFactory {
 		return frame;
 	}
 	
-	public Frame constructPrevFrame(Mat prevMat){
-		return new Frame(prevMat,numOfRows,numOfCols);
-	}
-	
 	private void initSizeConfig(MeanVarianceAccumulator[][] mvAccs){
 		Cell[][] cells = initCellArray(mvAccs);
 		sting = constructSting(cells);
+		System.out.println("Sting Constructed");
 		executeSting();
+		System.out.println("Sting Executed");
 		initSizeInfo();
 	}
 	
+	public Frame constructPrevFrame(Mat prevMat){
+		return new Frame(prevMat,numOfRows,numOfCols,this.ctrOfSigCells);
+	}
+	
 	private void constructFrame(){
-		frame = new Frame(mat,numOfRows,numOfCols);
+		frame = new Frame(mat,numOfRows,numOfCols,this.ctrOfSigCells);
 	}
 	
 	private Cell[][] initCellArray(MeanVarianceAccumulator[][] mvAccs){
@@ -56,7 +62,7 @@ public class FrameFactory {
 				mvAcc = mvAccs[i][j];
 				double value = mat.get(i, j)[0];
 				sig = new Significance(!mvAcc.isPointWithinConfidenceInterval(value));
-				cells[i][j] = new Cell(sig);
+				cells[i][j] = new Cell(sig,i,j);
 			}
 		}
 		
@@ -101,10 +107,20 @@ public class FrameFactory {
 				}else{
 					System.out.println("FrameFactory Line 102: Unexpected type "+prop.getClass());
 				}
-			}			
+			}
 		}
 		
-		System.out.println("Moving Cells Level: "+movingCells.get(0).getLevel());
+		System.out.println("Moving Cells Size: "+movingCells.size());
+		
+		initCtrOfSigCells(movingCells);
+	}
+	
+	private void initCtrOfSigCells(ArrayList<Cell> sigCells){
+		this.ctrOfSigCells.clear();
+		for(int i=0; i<sigCells.size(); i++){
+			Cell c = sigCells.get(i);
+			this.ctrOfSigCells.add(c.getCenter());
+		}
 	}
 	
 	private void initSizeInfo(){
