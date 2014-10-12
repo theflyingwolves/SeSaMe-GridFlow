@@ -121,30 +121,24 @@ public class VideoProcessorSting {
 //				printMvAccInfo();
 //			}
 			
-			System.out.println("Start constructing factory");
 			factory = new FrameFactory(matToProcess,mvAccs);
-			System.out.println("Factory constructed");
 			Frame currFrame = factory.getFrame();
 			Frame prevFrame = factory.constructPrevFrame(prevMat);
-			System.out.println("prevFrame and currFrame constructed");
-			prepareFrame(currFrame); //Convert frame to b/w frame and assign pixels to each grid
+			prepareFrame(currFrame);
 			prepareFrame(prevFrame);
-			System.out.println("prevFrame and currFrame prepared");
 			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
-			System.out.println("minCostMatch Obtained");
-//			updateMovingDirections(minCostMatch);
+			updateMovingDirections(minCostMatch);
+			currFrame.updateGridMovingPosition();
+			currFrame.updateAverageMovingDirection();
 //			clusterUsingSting(currFrame);
 		}
 		
 		private Map<Grid,Grid> BipartiteMatch(Frame currFrame,Frame prevFrame){
 			ArrayList<Grid> currSignificantGridArray = currFrame.getSignificantGridArray();
 			ArrayList<Grid> prevSignificantGridArray = prevFrame.getSignificantGridArray();
-			System.out.println("SigArray: "+currSignificantGridArray.size());
 			Map<Edge<Grid>,Double> graph = buildGraphUsingSignificantGridArrays(currSignificantGridArray,
 					prevSignificantGridArray);
-			System.out.println("Graph Successfully Built");
 			HungarianMatch<Grid> hMatch = new HungarianMatch<Grid>(graph);
-			System.out.println("Min Cost Match Obtained");
 			Map<Grid,Grid> minCostMatch = hMatch.getMinCostMatch();
 			return minCostMatch;
 //			updateMovingDirections(minCostMatch);

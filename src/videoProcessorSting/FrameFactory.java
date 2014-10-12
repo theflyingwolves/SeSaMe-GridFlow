@@ -23,7 +23,6 @@ public class FrameFactory {
 		if(mat.rows() == mvAccs.length && mat.cols()==mvAccs[0].length){
 			this.mat = mat;
 			this.ctrOfSigCells = new ArrayList<Point>();
-			System.out.println("Start Init Size Config");
 			initSizeConfig(mvAccs);
 			constructFrame();
 		}else{
@@ -38,9 +37,7 @@ public class FrameFactory {
 	private void initSizeConfig(MeanVarianceAccumulator[][] mvAccs){
 		Cell[][] cells = initCellArray(mvAccs);
 		sting = constructSting(cells);
-		System.out.println("Sting Constructed");
 		executeSting();
-		System.out.println("Sting Executed");
 		initSizeInfo();
 	}
 	
@@ -109,9 +106,7 @@ public class FrameFactory {
 				}
 			}
 		}
-		
-		System.out.println("Moving Cells Size: "+movingCells.size());
-		
+				
 		initCtrOfSigCells(movingCells);
 	}
 	
