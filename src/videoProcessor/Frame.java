@@ -48,12 +48,11 @@ public class Frame {
 			for(int j=0; j<gridArray.size(); j++){
 				Grid grid = gridArray.get(j);
 				if(grid.isPointWithinGrid(center)){
+					Core.circle(frameAsMat, grid.getCenter(), 5, new Scalar(100,0,0));
 					significantGridArray.add(grid);
 				}
 			}
 		}
-		
-		System.out.println("Significant Grid Array Size: "+significantGridArray.size());
 	}
 	
 	private void initGridArray(){
