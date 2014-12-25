@@ -4,8 +4,7 @@ import org.opencv.core.Mat;
 import videoProcessor.Frame;
 import videoProcessor.VideoProcessor;
 import MotionDetectionUtility.ImageSequenceLoader;
-import MotionDetectionUtility.ImageSequenceLoaderJavaBased;
-import MotionDetectionUtility.VideoDisplayer;
+import MotionDetectionUtility.VideoPlayer;
 import MotionDetectionUtility.VideoLoader;
 
  public class MotionDetection{
@@ -31,7 +30,7 @@ import MotionDetectionUtility.VideoLoader;
 	    ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
 	    VideoProcessor sProcessor = new VideoProcessor();
 	    while(!loader.isEndOfSequence()){
-	    	Mat sFrame = loader.getFrameAsMat();
+	    	Mat sFrame = loader.getNextFrameAsMat();
 	    	sProcessor.processFrame(sFrame);
 	    }
 	    
