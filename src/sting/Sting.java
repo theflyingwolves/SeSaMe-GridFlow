@@ -23,6 +23,10 @@ public class Sting {
 		layers.add(upperLayer);
 	}
 	
+	public void reset(Cell[][] dataCells){
+		this.initWithDataCells(dataCells);
+	}
+	
 	public void printInfo(){
 		Layer layer = getTopLayer();
 		layer.printInfo();

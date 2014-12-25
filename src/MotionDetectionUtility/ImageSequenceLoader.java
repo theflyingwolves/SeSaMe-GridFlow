@@ -34,7 +34,7 @@ public class ImageSequenceLoader {
 		}
 	}
 	
-	public Mat getFrameAsMat(){
+	public Mat getNextFrameAsMat(){
 		
 		if(this.buffer.size() == 0){
 			if(this.isSequenceFinished){

@@ -39,7 +39,7 @@ public class MeanVarianceAccumulator {
 	
 	public boolean isPointWithinConfidenceInterval(double x){
 		double std = Math.sqrt(this.variance);
-		double confidenceControl = 4;
+		double confidenceControl = 3;
 		if(x >= this.mean - confidenceControl*std &&
 				x <= this.mean + confidenceControl*std){
 			return true;

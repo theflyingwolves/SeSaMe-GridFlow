@@ -12,13 +12,7 @@ public class BufferQueue<elemT> {
 	}
 	
 	public boolean add(elemT e){
-//		if(store.size() >= maxBufferSize){
-//			removeOldest();
-//		}
-//		while(store.size() >= maxBufferSize);
-//		store.add(e);
 		if(store.size() >= maxBufferSize){
-//			System.out.println("Adding Failed");
 			return false;
 		}else{
 			store.add(e);
@@ -37,10 +31,10 @@ public class BufferQueue<elemT> {
 	}
 	
 	public void removeOldest(){
-		if(store.size() >= maxBufferSize){
+//		if(store.size() >= maxBufferSize){
 			int oldestIndex = 0;
 			store.remove(oldestIndex);
-		}
+//		}
 	}
 	
 	public elemT getSecondLatest(){
@@ -50,23 +44,6 @@ public class BufferQueue<elemT> {
 			return null;
 		}
 	}
-	
-//	public elemT getAndRemoveOldest(){
-//		elemT oldestElemt = getOldest();
-//		if(oldestElemt != null){
-//			store.remove(0);
-//		}
-//		return oldestElemt;
-//	}
-//	
-//	public elemT getOldest(){
-//		if(store.size()>0){
-//			elemT oldestElemt = store.get(0);
-//			return oldestElemt;
-//		}else{
-//			return null;
-//		}
-//	}
 	
 	public int size(){
 		return store.size();

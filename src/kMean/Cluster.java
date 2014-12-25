@@ -32,6 +32,7 @@ public class Cluster {
 		return variance;
 	}
 	
+	
 	public ArrayList<Double> getData(){
 		return dataStore;
 	}

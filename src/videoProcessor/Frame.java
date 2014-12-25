@@ -32,7 +32,7 @@ public class Frame {
 		this.numOfCols = numOfCols;
 		this.significantGridArray = new ArrayList<Grid>();
 		initGridArray();
-		initFrameGridBorder();
+//		initFrameGridBorder();
 	}
 	
 	public Frame(Mat mat, int numOfRows, int numOfCols, ArrayList<Point> sigCenters){
@@ -44,11 +44,11 @@ public class Frame {
 		
 		// Can be optimized by sorting
 		for(int i=0; i<centers.size(); i++){
-			Point center = centers.get(i);
+			Point center = new Point(centers.get(i).y, centers.get(i).x);
 			for(int j=0; j<gridArray.size(); j++){
 				Grid grid = gridArray.get(j);
 				if(grid.isPointWithinGrid(center)){
-					Core.circle(frameAsMat, grid.getCenter(), 5, new Scalar(100,0,0));
+					Core.circle(frameAsMat, grid.getCenter(), 5, new Scalar(0,0,100));
 					significantGridArray.add(grid);
 				}
 			}

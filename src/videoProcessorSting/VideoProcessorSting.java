@@ -15,32 +15,35 @@ import bipartiteMatching.Edge;
 import bipartiteMatching.HungarianMatch;
 import videoProcessor.Frame;
 import videoProcessor.Grid;
-import videoProcessor.VideoProcessor;
 import DataStructure.BufferQueue;
-import MotionDetectionUtility.DisplayWindow;
+import MotionDetectionUtility.VideoDisplayer;
 import MotionDetectionUtility.ImageSequenceLoader;
 import MotionDetectionUtility.MeanVarianceAccumulator;
 import MotionDetectionUtility.Utility;
 import MotionDetectionUtility.Vector;
+import MotionDetectionUtility.VideoLoader;
 
 public class VideoProcessorSting {
 	private final int BUFFER_SIZE = 2;
 	private final int PROCESSOR_FREQUENCY = 50;
-	private final int NUM_OF_FRAMES_INIT = 50;
+	private final int NUM_OF_FRAMES_INIT = 30;
 	
 	private int globalFrameNumberCounter;
 	
 	private BufferQueue<Mat> buffer;
 	private Mat prevMat,currMat;
 	private MeanVarianceAccumulator[][] mvAccs;
-	private DisplayWindow window;
+	private VideoDisplayer window;
 	private Timer timer;
 	private FrameFactory factory;
+	
+	private ArrayList<Grid> currSignificantGridArray;
+	private ArrayList<Grid> prevSignificantGridArray;
 	
 	public VideoProcessorSting(){
 		globalFrameNumberCounter = 0;
 		buffer = new BufferQueue<Mat>(BUFFER_SIZE);
-		window = new DisplayWindow();
+		window = new VideoDisplayer();
 		timer = new Timer();
 		timer.schedule(new Processor(),0,PROCESSOR_FREQUENCY);
 	}
@@ -56,26 +59,16 @@ public class VideoProcessorSting {
 		
 		@Override
 		public void run() {
+			System.out.println("Buffer Size: "+buffer.size());
 			if(buffer.size() > 0){
-				Mat matToProcess = buffer.getLatest();
-				prevMat = currMat;
-				currMat = matToProcess;
-				
-				buffer.removeOldest();
-				
-//				if(globalFrameNumberCounter < NUM_OF_FRAMES_INIT){
-//					accumulateMvAccs(matToProcess);
-//				}else{
-//					processMat(matToProcess);
-//				}
-				
-				if(matToProcess != null){
-					accumulateMvAccs(matToProcess);
+				nextFrame();
+				if(currMat != null){
+					accumulateMvAccs(currMat);
 					
 					BufferedImage img;
 					
 					if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
-						processMat(matToProcess);
+						processMat(currMat);
 						img = Utility.matToBufferedImage(factory.getFrame().getFrameAsMat());
 					}else{
 						img = Utility.matToBufferedImage(currMat);
@@ -85,10 +78,14 @@ public class VideoProcessorSting {
 					window.showFrame(img);
 					
 					globalFrameNumberCounter ++;
-				
 				}
-
 			}
+		}
+		
+		private void nextFrame(){
+			prevMat = currMat;
+			currMat = buffer.getLatest();
+			buffer.removeOldest();
 		}
 		
 		private void accumulateMvAccs(Mat mat){
@@ -117,25 +114,30 @@ public class VideoProcessorSting {
 		}
 		
 		private void processMat(Mat matToProcess){
-//			if(globalFrameNumberCounter == (NUM_OF_FRAMES_INIT+1)){
-//				printMvAccInfo();
-//			}
+			if(factory == null){
+				factory = new FrameFactory(matToProcess,mvAccs);
+			}else{
+				factory.resetFrameFactory(matToProcess,mvAccs);
+			}
 			
-			factory = new FrameFactory(matToProcess,mvAccs);
 			Frame currFrame = factory.getFrame();
 			Frame prevFrame = factory.constructPrevFrame(prevMat);
-			prepareFrame(currFrame);
-			prepareFrame(prevFrame);
-			Map<Grid,Grid> minCostMatch = BipartiteMatch(currFrame,prevFrame);
+			initSignificantGridArrays(currFrame, prevFrame);
+			Map<Grid,Grid> minCostMatch = BipartiteMatch();
 			updateMovingDirections(minCostMatch);
 			currFrame.updateGridMovingPosition();
 			currFrame.updateAverageMovingDirection();
 //			clusterUsingSting(currFrame);
 		}
 		
-		private Map<Grid,Grid> BipartiteMatch(Frame currFrame,Frame prevFrame){
-			ArrayList<Grid> currSignificantGridArray = currFrame.getSignificantGridArray();
-			ArrayList<Grid> prevSignificantGridArray = prevFrame.getSignificantGridArray();
+		private void initSignificantGridArrays(Frame currFrame, Frame prevFrame){
+			prepareFrame(currFrame);
+			prepareFrame(prevFrame);
+			currSignificantGridArray = currFrame.getSignificantGridArray();
+			prevSignificantGridArray = prevFrame.getSignificantGridArray();
+		}
+		
+		private Map<Grid,Grid> BipartiteMatch(){
 			Map<Edge<Grid>,Double> graph = buildGraphUsingSignificantGridArrays(currSignificantGridArray,
 					prevSignificantGridArray);
 			HungarianMatch<Grid> hMatch = new HungarianMatch<Grid>(graph);
@@ -145,16 +147,24 @@ public class VideoProcessorSting {
 		}
 		
 		private void prepareFrame(Frame frame){
-			Mat mat = frame.getFrameAsMat();
-			if(mat!=null){
-				if(frame.getFrameAsMat().channels() > 1){
-					Imgproc.cvtColor(frame.getFrameAsMat(), frame.getFrameAsMat(),Imgproc.COLOR_BGR2GRAY);
+			if(frame.getFrameAsMat()!=null){
+				if(isFrameInColor(frame)){
+					frame = convertFrameToGray(frame);
 				}
-				assignPixelsToGrids(frame);
+				dividedFrameIntoGrids(frame);
 			}
 		}
 		
-		private void assignPixelsToGrids(Frame frame){
+		private boolean isFrameInColor(Frame frame){
+			return frame.getFrameAsMat().channels() > 1;
+		}
+		
+		private Frame convertFrameToGray(Frame frame){
+			Imgproc.cvtColor(frame.getFrameAsMat(), frame.getFrameAsMat(),Imgproc.COLOR_BGR2GRAY);
+			return frame;
+		}
+		
+		private void dividedFrameIntoGrids(Frame frame){
 			ArrayList<Grid> gridArray = frame.getGridArray();
 			BufferedImage frameAsImage = frame.getFrameAsBufferedImage();
 			int[][] frameAsIntArray = Utility.bufferedImageTo2DArray(frameAsImage);
@@ -198,16 +208,6 @@ public class VideoProcessorSting {
 			
 			return graph;
 		}
-		
-		private void printMvAccInfo(){
-//			System.out.println("Printing MvAcc Info");
-			for(int i=0;i<mvAccs.length;i++){
-				for(int j=0;j<mvAccs[0].length;j++){
-					System.out.println("Variance: "+mvAccs[i][j].getVariance());
-				}
-			}
-//			System.out.println("Mean: "+mvAccs[100][100].getMean());
-		}
 	}
 	
 	private int getEdgeWeightBetweenGrids(Grid grid1, Grid grid2){
@@ -238,8 +238,19 @@ public class VideoProcessorSting {
 	    ImageSequenceLoader loader = new ImageSequenceLoader(basename,typeString,count);
 	    VideoProcessorSting sProcessor = new VideoProcessorSting();
 	    while(!loader.isEndOfSequence()){
-	    	Mat mat = loader.getFrameAsMat();			
+	    	Mat mat = loader.getNextFrameAsMat();			
 	    	sProcessor.processFrame(mat);
 	    }
+
+//	    String fileName = "/Users/theflyingwolves/Desktop/raiseHand.mp4";
+//	    VideoLoader loader = new VideoLoader(fileName);
+//	    VideoProcessorSting processor = new VideoProcessorSting();
+//	    int counter = 0;
+//	    while(!loader.isEndOfVideo()){
+//	    	counter ++;
+//	    	System.out.println("Frame "+counter);
+//	    	Mat frame = loader.getFrameAsMat();
+//	    	processor.processFrame(frame);
+//	    }
 	}
 }

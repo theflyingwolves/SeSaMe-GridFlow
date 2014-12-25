@@ -34,6 +34,13 @@ public class FrameFactory {
 		return frame;
 	}
 	
+	public void resetFrameFactory(Mat mat,MeanVarianceAccumulator[][] mvAccs){
+		this.mat = mat;
+		this.ctrOfSigCells = new ArrayList<Point>();
+		initSizeConfig(mvAccs);
+		constructFrame();
+	}
+	
 	private void initSizeConfig(MeanVarianceAccumulator[][] mvAccs){
 		Cell[][] cells = initCellArray(mvAccs);
 		sting = constructSting(cells);
@@ -42,6 +49,7 @@ public class FrameFactory {
 	}
 	
 	public Frame constructPrevFrame(Mat prevMat){
+		System.out.println("Length: "+this.ctrOfSigCells.size());
 		return new Frame(prevMat,numOfRows,numOfCols,this.ctrOfSigCells);
 	}
 	
@@ -83,7 +91,7 @@ public class FrameFactory {
 			}else{
 				movingCells.clear();
 			}
-					
+
 			sting.execute();
 
 			exeCount++;
@@ -106,7 +114,9 @@ public class FrameFactory {
 				}
 			}
 		}
-				
+		
+//		sting.printInfo();
+		
 		initCtrOfSigCells(movingCells);
 	}
 	

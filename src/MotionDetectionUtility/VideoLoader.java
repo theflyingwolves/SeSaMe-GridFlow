@@ -28,7 +28,7 @@ public class VideoLoader {
 		buffer = new ArrayList<Mat>();
 	}
 	
-	public Mat getFrameAsMat(){
+	public Mat getNextFrameAsMat(){
 		if(buffer.size() <= 0){
 			if(isVideoFinished){
 				return null;
@@ -57,7 +57,7 @@ public class VideoLoader {
 			capture.read(frameAsMat);
 			if(!frameAsMat.empty()){
 				Imgproc.pyrDown(frameAsMat, frameAsMat, new Size(frameAsMat.size().width/2,frameAsMat.size().height/2));
-//				Imgproc.pyrDown(frameAsMat, frameAsMat, new Size(frameAsMat.size().width/2,frameAsMat.size().height/2));
+				Imgproc.pyrDown(frameAsMat, frameAsMat, new Size(frameAsMat.size().width/2,frameAsMat.size().height/2));
 				buffer.add(frameAsMat);
 			}else{
 				this.isVideoFinished = true;

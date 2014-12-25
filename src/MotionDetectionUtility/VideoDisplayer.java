@@ -2,31 +2,26 @@ package MotionDetectionUtility;
 
 import java.awt.image.BufferedImage;
 
-import org.opencv.highgui.VideoCapture;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class VideoDisplayer {
-	private VideoCapture capture;
-	private VideoLoader loader;
-	private DisplayWindow window;
+	private JFrame frame;
+	private JLabel label;
 	
-	public VideoDisplayer(String videoName){
-		capture = new VideoCapture(videoName);
-		loader = new VideoLoader(capture);
-		window = new DisplayWindow();
+	public VideoDisplayer(){
+		 frame = new JFrame("Video Analysis");
+		 label = new JLabel();
+		 frame.getContentPane().add(label);
+		 frame.setVisible(true); 
 	}
 	
-	public VideoDisplayer(VideoCapture capt){
-		capture = capt;
-		loader = new VideoLoader(capture);
-		window = new DisplayWindow();
+	public void setSize(int width, int height){
+		frame.setSize(width,height);
 	}
 	
-	public void play(){
-		BufferedImage frame = Utility.matToBufferedImage(loader.getFrameAsMat());
-		do{
-			window.setSize(frame.getWidth(), frame.getHeight());
-			window.showFrame(frame);
-			frame = Utility.matToBufferedImage(loader.getFrameAsMat());
-		}while(frame != null);
+	public void showFrame(BufferedImage img){
+		label.setIcon(new ImageIcon(img));
 	}
 }

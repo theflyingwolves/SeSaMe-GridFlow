@@ -22,7 +22,7 @@ import bipartiteMatching.HungarianMatch;
 import scatterPlotter.ScatterPlot;
 import thresholdAnalyzer.DynamicThresholdSelector;
 import DataStructure.BufferQueue;
-import MotionDetectionUtility.DisplayWindow;
+import MotionDetectionUtility.VideoDisplayer;
 import MotionDetectionUtility.MeanVarianceAccumulator;
 import MotionDetectionUtility.Utility;
 import MotionDetectionUtility.Vector;
@@ -43,14 +43,14 @@ public class VideoProcessor {
 	
 	private BufferQueue<Frame> buffer;
 	private Timer timer;
-	private DisplayWindow window;
+	private VideoDisplayer window;
 	
 	private MeanVarianceAccumulator globalVarianceMvAcc;
 		
 	public VideoProcessor(){
 		buffer = new BufferQueue<Frame>(this.BUFFER_SIZE);
 		timer = new Timer();
-		window = new DisplayWindow();
+		window = new VideoDisplayer();
 		globalVarianceMvAcc = new MeanVarianceAccumulator();
 		threshold = 0;
 //		this.dataOfVariance = new float[2][COUNT];

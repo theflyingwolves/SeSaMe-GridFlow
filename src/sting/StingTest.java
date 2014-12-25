@@ -7,12 +7,12 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 import sting.StingTestFake.Significance;
-import MotionDetectionUtility.DisplayWindow;
+import MotionDetectionUtility.VideoDisplayer;
 import MotionDetectionUtility.ImageSequenceLoader;
 import MotionDetectionUtility.Utility;
 
 public class StingTest {
-	private static DisplayWindow window;
+	private static VideoDisplayer window;
 	
 //	public static class Significance extends Combinable {
 //		private float significance;
@@ -122,7 +122,7 @@ public class StingTest {
 	
 	public static void main(String[] args){
 	    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	    window = new DisplayWindow();
+	    window = new VideoDisplayer();
 	    
 //		Cell[][] cells = new Cell[8][8];
 //		int counter = 0;
@@ -225,7 +225,7 @@ public class StingTest {
 		String typeName = ".JPG";
 		int count = 1;
 		ImageSequenceLoader loader = new ImageSequenceLoader(baseName, typeName, count);
-		Mat frame = loader.getFrameAsMat();
+		Mat frame = loader.getNextFrameAsMat();
 		Mat grayscaleFrame = convertToGrayScale(frame);
 		BufferedImage image = Utility.matToBufferedImage(grayscaleFrame);
 //		showMat(image);
