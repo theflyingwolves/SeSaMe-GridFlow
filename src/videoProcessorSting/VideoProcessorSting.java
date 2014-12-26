@@ -69,7 +69,7 @@ public class VideoProcessorSting {
 					
 					if(globalFrameNumberCounter > NUM_OF_FRAMES_INIT){
 						processMat(currMat);
-						img = Utility.matToBufferedImage(factory.getFrame().getFrameAsMat());
+						img = Utility.matToBufferedImage(factory.constructFrame(currMat).getFrameAsMat());
 					}else{
 						img = Utility.matToBufferedImage(currMat);
 					}
@@ -120,33 +120,34 @@ public class VideoProcessorSting {
 				factory.resetFrameFactory(matToProcess,mvAccs);
 			}
 			
-			Frame currFrame = factory.getFrame();
-			Frame prevFrame = factory.constructPrevFrame(prevMat);
+			Frame currFrame = factory.constructFrame(currMat);
+			Frame prevFrame = factory.constructFrame(prevMat);
+			
 			initSignificantGridArrays(currFrame, prevFrame);
 			Map<Grid,Grid> minCostMatch = BipartiteMatch();
 			updateMovingDirections(minCostMatch);
+			
 			currFrame.updateGridMovingPosition();
 			currFrame.updateAverageMovingDirection();
 //			clusterUsingSting(currFrame);
 		}
 		
 		private void initSignificantGridArrays(Frame currFrame, Frame prevFrame){
-			prepareFrame(currFrame);
-			prepareFrame(prevFrame);
+			prepareMat(currFrame);
+			prepareMat(prevFrame);
 			currSignificantGridArray = currFrame.getSignificantGridArray();
 			prevSignificantGridArray = prevFrame.getSignificantGridArray();
 		}
 		
 		private Map<Grid,Grid> BipartiteMatch(){
-			Map<Edge<Grid>,Double> graph = buildGraphUsingSignificantGridArrays(currSignificantGridArray,
-					prevSignificantGridArray);
+			Map<Edge<Grid>,Double> graph = buildBipartiteGraph();
 			HungarianMatch<Grid> hMatch = new HungarianMatch<Grid>(graph);
 			Map<Grid,Grid> minCostMatch = hMatch.getMinCostMatch();
 			return minCostMatch;
 //			updateMovingDirections(minCostMatch);
 		}
 		
-		private void prepareFrame(Frame frame){
+		private void prepareMat(Frame frame){
 			if(frame.getFrameAsMat()!=null){
 				if(isFrameInColor(frame)){
 					frame = convertFrameToGray(frame);
@@ -188,8 +189,7 @@ public class VideoProcessorSting {
 			}
 		}
 		
-		private Map<Edge<Grid>,Double> buildGraphUsingSignificantGridArrays(ArrayList<Grid> currSignificantGridArray,
-							ArrayList<Grid> prevSignificantGridArray){
+		private Map<Edge<Grid>,Double> buildBipartiteGraph(){
 			Map<Edge<Grid>,Double> graph = new HashMap<Edge<Grid>,Double>();
 			
 			if(currSignificantGridArray != null && currSignificantGridArray.size() > 0){

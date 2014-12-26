@@ -16,7 +16,6 @@ public class FrameFactory {
 	private Mat mat;
 	private int numOfRows, numOfCols;
 	private Sting sting;
-	private Frame frame;
 	private ArrayList<Point> ctrOfSigCells;
 	
 	public FrameFactory(Mat mat, MeanVarianceAccumulator[][] mvAccs){
@@ -24,21 +23,19 @@ public class FrameFactory {
 			this.mat = mat;
 			this.ctrOfSigCells = new ArrayList<Point>();
 			initSizeConfig(mvAccs);
-			constructFrame();
 		}else{
 			System.out.println("FrameFactory: mvAccs is not of the appropriate size");
 		}
 	}
 	
-	public Frame getFrame(){
-		return frame;
+	public Frame constructFrame(Mat frameMat){
+		return new Frame(frameMat,numOfRows,numOfCols,this.ctrOfSigCells);
 	}
 	
 	public void resetFrameFactory(Mat mat,MeanVarianceAccumulator[][] mvAccs){
 		this.mat = mat;
 		this.ctrOfSigCells = new ArrayList<Point>();
 		initSizeConfig(mvAccs);
-		constructFrame();
 	}
 	
 	private void initSizeConfig(MeanVarianceAccumulator[][] mvAccs){
@@ -46,15 +43,6 @@ public class FrameFactory {
 		sting = constructSting(cells);
 		executeSting();
 		initSizeInfo();
-	}
-	
-	public Frame constructPrevFrame(Mat prevMat){
-		System.out.println("Length: "+this.ctrOfSigCells.size());
-		return new Frame(prevMat,numOfRows,numOfCols,this.ctrOfSigCells);
-	}
-	
-	private void constructFrame(){
-		frame = new Frame(mat,numOfRows,numOfCols,this.ctrOfSigCells);
 	}
 	
 	private Cell[][] initCellArray(MeanVarianceAccumulator[][] mvAccs){
