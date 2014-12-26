@@ -98,7 +98,7 @@ public class FrameFactory {
 						movingCells.add(c);
 					}
 				}else{
-					System.out.println("FrameFactory Line 102: Unexpected type "+prop.getClass());
+					System.out.println("Unexpected type "+prop.getClass());
 				}
 			}
 		}
