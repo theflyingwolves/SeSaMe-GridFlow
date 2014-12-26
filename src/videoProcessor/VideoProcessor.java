@@ -1,5 +1,8 @@
 package videoProcessor;
 
+import hungarianMatch.Edge;
+import hungarianMatch.HungarianMatch;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +20,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import bipartiteMatching.Edge;
-import bipartiteMatching.HungarianMatch;
 import scatterPlotter.ScatterPlot;
 import thresholdAnalyzer.DynamicThresholdSelector;
 import DataStructure.BufferQueue;

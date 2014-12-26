@@ -1,5 +1,8 @@
 package videoProcessorSting;
 
+import hungarianMatch.Edge;
+import hungarianMatch.HungarianMatch;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +14,6 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
-import bipartiteMatching.Edge;
-import bipartiteMatching.HungarianMatch;
 import videoProcessor.Frame;
 import videoProcessor.Grid;
 import DataStructure.BufferQueue;

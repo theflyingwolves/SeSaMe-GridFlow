@@ -1,11 +1,12 @@
 package videoProcessorSting;
 
+import hungarianMatch.Edge;
+import hungarianMatch.HungarianMatch;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import bipartiteMatching.Edge;
-import bipartiteMatching.HungarianMatch;
 import videoProcessor.Frame;
 import videoProcessor.Grid;
 

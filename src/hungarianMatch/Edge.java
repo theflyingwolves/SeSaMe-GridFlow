@@ -1,4 +1,4 @@
-package bipartiteMatching;
+package hungarianMatch;
 
 public class Edge<GType> {
 	private GType node1;

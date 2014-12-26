@@ -100,7 +100,6 @@ public class Frame {
 		if(this.mvAccs == null){
 			this.mvAccs = new ArrayList<MeanVarianceAccumulator>();
 		}
-		int oldSize = this.mvAccs.size();
 		this.mvAccs.addAll(newMvAccs);
 	}
 	
@@ -171,7 +170,7 @@ public class Frame {
 	 * 
 	 * @param grid1
 	 * @param grid2
-	 * @return Defines what it means by being 
+	 * @return Defines what it means by being neighbors of grids
 	 */
 	public static boolean areGridsNear(Grid grid1, Grid grid2){
 		int row1 = grid1.getRowIndex();

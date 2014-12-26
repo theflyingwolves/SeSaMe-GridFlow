@@ -1,4 +1,4 @@
-package bipartiteMatching;
+package hungarianMatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
